@@ -10,6 +10,8 @@ import { send, getHost } from '../../data/fetch';
 import { FImage } from '../../res/custom/FImages';
 import { colors } from '../../res/colors';
 import { FHeading } from '../../res/custom/FText';
+import { FLoading } from '../../res/custom/FLoading';
+import { FWrong } from '../../res/custom/FWrong';
 
 
 export class ChangeIDPhoto extends Component {
@@ -136,10 +138,10 @@ export class ChangeIDPhoto extends Component {
         const { loading, somethingWrong, picture, user } = this.state;
 
         if(loading) {
-            return <LoadingIndicator />;
+            return <FLoading loadingColor={ colors.purple } />;
 
         } else if(somethingWrong) {
-            return <View><Text>somethingWrong</Text></View>
+            return <FWrong tryAgain={ f => f } btnColor={ colors.purple } />
 
         } else {
             return (

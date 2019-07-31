@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { LoadingIndicator } from '../helper/LoadingIndicator';
+import { FLoading } from '../../res/custom/FLoading';
+import { colors } from '../../res/colors';
 
 
 export class Posts extends Component {
@@ -15,9 +17,9 @@ export class Posts extends Component {
         const { loading, somethingWrong } = this.state;
 
         if(loading) {
-            return <LoadingIndicator />;
+            return <FLoading loadingColor={ colors.purple } />;
         } else {
-            return <LoadingIndicator />;
+            return <FLoading />;
         }
     }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, PermissionsAndroid } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { LoadingIndicator } from '../helper/LoadingIndicator';
 import { FHeading } from '../../res/custom/FText';

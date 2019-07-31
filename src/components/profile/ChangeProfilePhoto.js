@@ -9,6 +9,8 @@ import { FImageButton, FButton } from '../../res/custom/FButtons';
 import { send, getHost } from '../../data/fetch';
 import { FImage } from '../../res/custom/FImages';
 import { colors } from '../../res/colors';
+import { FLoading } from '../../res/custom/FLoading';
+import { FWrong } from '../../res/custom/FWrong';
 
 
 export class ChangeProfilePhoto extends Component {
@@ -135,10 +137,10 @@ export class ChangeProfilePhoto extends Component {
         const { loading, somethingWrong, picture, user } = this.state;
 
         if(loading) {
-            return <LoadingIndicator />;
+            return <FLoading loadingColor={ colors.purple } />;
 
         } else if(somethingWrong) {
-            return <View><Text>somethingWrong</Text></View>
+            return <FWrong tryAgain={ f => f } btnColor={ colors.purple } />
 
         } else {
             return (

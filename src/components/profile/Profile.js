@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { ScrollView, View, Text, RefreshControl } from 'react-native';
-import { LoadingIndicator } from '../helper/LoadingIndicator';
 import AsyncStorage from '@react-native-community/async-storage';
 import { send, getHost } from '../../data/fetch';
 import layout from '../../res/st/layout';
 import { FHeading } from '../../res/custom/FText';
-import { FContact, FContactStatic } from '../../res/custom/FContact';
+import { FContactStatic } from '../../res/custom/FContact';
 import { FContactPhotoClickable } from '../../res/custom/FContactPhoto';
 import { FButton } from '../../res/custom/FButtons';
 import { colors } from '../../res/colors';
 import { FPrompt } from '../../res/custom/FPrompt';
 import { deleteCred } from '../../data/auth';
 import { FInputPrompt } from '../../res/custom/FInputPrompt';
+import { FWrong } from '../../res/custom/FWrong';
+import { FLoading } from '../../res/custom/FLoading';
 
 
 export class Profile extends Component {
@@ -210,10 +211,10 @@ export class Profile extends Component {
             editNameOpen, name, editPhoneOpen, phone } = this.state;
 
         if(loading) {
-            return <LoadingIndicator />;
+            return <FLoading loadingColor={ colors.purple } />;
 
         } else if(somethingWrong) {
-            return <View><Text>Something went wrong</Text></View>
+            return <FWrong tryAgain={ f => f } btnColor={ colors.purple } />
 
         } else if(editNameOpen){
             // Edit name
