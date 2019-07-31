@@ -6,16 +6,17 @@ import { FButton } from './FButtons';
 import { colors } from '../colors';
 
 
-export const FPrompt = ({ title, cancelable, acceptable }) => {
+export const FPrompt = ({ title, subTitle="", cancelable, acceptable }) => {
     return (
         <View style={ {...layout.containerWhite, paddingTop: 100 } }>
             <Text style={ text.autoBlack }>{ title }</Text>
+            <Text style={ text.autoBlack }>{ subTitle }</Text>
 
             <View style={ layout.columnSeparator }>
                 <View style={ layout.column50 }>
                     <FButton
                         title='CANCEL'
-                        onPress={ cancelable }
+                        handler={ cancelable }
                         buttonStyles={{ width: '60%', borderRadius: 10 }}
                     />
                 </View>
@@ -23,7 +24,7 @@ export const FPrompt = ({ title, cancelable, acceptable }) => {
                 <View style={ layout.column50 }>
                     <FButton
                         title='OK'
-                        onPress={ acceptable }
+                        handler={ acceptable }
                         buttonStyles={{ width: '60%', borderColor: colors.red, borderRadius: 10 }}
                         textStyles={{ color: colors.red }}
                     />

@@ -5,12 +5,12 @@ import text from '../st/text';
 import { colors } from '../colors';
 
 
-export const FLoading = ({ title='Loading', loadingColor=colors.black }) => {
-    const loadingText = title + '...';
+export const FLoading = ({ title='Loading...', subTitle="", loadingColor=colors.black }) => {
 
     return (
         <View style={ {...layout.containerWhite, ...loadStyle.style } }>
-            <Text style={ { ...text.autoBlack, color: loadingColor }}>{ loadingText }</Text>
+            <Text style={ { ...text.autoBlack, color: loadingColor }}>{ title }</Text>
+            <Text style={ { ...text.autoBlack, color: loadingColor }}>{ subTitle }</Text>
             <ActivityIndicator size='small' color={ loadingColor } />
         </View>
     );

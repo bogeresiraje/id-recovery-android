@@ -206,6 +206,11 @@ export class Profile extends Component {
 
     _deleteAccount = async () => {};
 
+    _tryAgain = () => {
+        this.setState({ loading: true, somethingWrong: false });
+        this._getUser();
+    };
+
     render() {
         const { loading, somethingWrong, refreshing, user, logoutPrompt, deleteAccountPrompt,
             editNameOpen, name, editPhoneOpen, phone } = this.state;
@@ -214,7 +219,7 @@ export class Profile extends Component {
             return <FLoading loadingColor={ colors.purple } />;
 
         } else if(somethingWrong) {
-            return <FWrong tryAgain={ f => f } btnColor={ colors.purple } />
+            return <FWrong tryAgain={ this._tryAgain } btnColor={ colors.purple } />
 
         } else if(editNameOpen){
             // Edit name

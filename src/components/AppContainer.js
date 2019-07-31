@@ -1,18 +1,20 @@
 import React from 'react';
 import { createStackNavigator, createAppContainer, createSwitchNavigator, createMaterialTopTabNavigator }
     from 'react-navigation';
+
 import { Login } from './accessControl/Login';
 import { Initial } from './helper/Initial';
 import { Posts } from './home/Posts';
 import { Profile } from './profile/Profile';
-import { colors } from '../res/colors';
 import { Find } from './findID/Find';
-import { FIconButton } from '../res/custom/FButtons';
 import { About } from './aboutApp/About';
 import { CreateAccount } from './accessControl/CreateAccount';
 import { ConfirmAccount } from './accessControl/ConfirmAccount';
 import { ChangeProfilePhoto } from './profile/ChangeProfilePhoto';
 import { ChangeIDPhoto } from './profile/ChangeIDPhoto';
+import { FoundProfile } from './findID/FoundProfile';
+import { FIconButton } from '../res/custom/FButtons';
+import { colors } from '../res/colors';
 
 
 // Initial component when the app is started
@@ -95,6 +97,13 @@ const mainNavigator = createStackNavigator(
                     />
                 ),
                 ...navConfig
+            })
+        },
+        FoundProfile: {
+            screen: FoundProfile,
+            navigationOptions: () => ({
+                headerTitle: 'Found User',
+                ...inNavConfig,
             })
         },
         About: {

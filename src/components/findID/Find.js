@@ -8,6 +8,11 @@ import { FImage } from '../../res/custom/FImages';
 import layout from '../../res/st/layout';
 import { colors } from '../../res/colors';
 import { permissionsAllowed } from '../../data/auth';
+import { send } from '../../data/fetch';
+import { FWrong } from '../../res/custom/FWrong';
+import { FLoading } from '../../res/custom/FLoading';
+import { FPrompt } from '../../res/custom/FPrompt';
+import ReportDispatcher from 'jest-jasmine2/build/jasmine/ReportDispatcher';
 
 
 export class Find extends Component {
@@ -17,6 +22,16 @@ export class Find extends Component {
             loading: false,
             somethingWrong: false,
             picture: null,
+
+            // activities
+            activities: {
+                detectingFace: false,
+                searchOwnerProfile: false,
+                noFaceDetected: false,
+                searchingOwner: false,
+                noOwnerFound: false,
+            },
+
         };
     }
 
@@ -63,18 +78,180 @@ export class Find extends Component {
         this.setState({ picture: null });
     };
 
+    // When a photo has been uploaded by the user, it should then be checked whether it contains a face
+    // If a face is found, then one can be asked to continue searching for the owner profile
+    // This is done by the server
+    _detectFace = async () => {
+        const { picture, activities } = this.state;
+
+        // Flag up detecting face indicator
+        activities.detectingFace = true;
+        this.setState({ activities: activities });
+
+        const formData = new FormData();
+        formData.append('photo', {
+            uri: picture.uri,
+            type: picture.type,
+            name: picture.fileName
+        });
+
+        await send('/detect_face', formData)
+            .then(response => {
+                if(response.face_detected) {
+                    // The user may continue to search for the owner
+                    activities.searchOwnerProfile = true;
+                    activities.detectingFace = false;
+                    this.setState({ activities: activities });
+                    
+                } else {
+                    // Ask user to choose another photo.
+                    activities.detectingFace = false;
+                    activities.noFaceDetected = true;
+                    this.setState({ activities: activities });
+                }
+            },
+            () => {
+                // Something could have gone wrong
+                activities.detectingFace = false,
+                this.setState({ somethingWrong: true, activities: activities });
+            }
+        )
+        .catch(() => {
+            // Catch request exceptions
+            activities.detectingFace = false,
+            this.setState({ somethingWrong: true, activities: activities });
+        })
+    };
+
+    // Cancel searching for the owner
+    _cancelSearchForOwner = () => {
+        const { activities } = this.state;
+        activities.searchOwnerProfile = false;
+        activities.detectingFace = false;
+        activities.noFaceDetected = false;
+
+        this.setState({ activities });
+    };
+
+    // Continue searching for the owner
+    _continueSearchForOwner = async () => {
+        const { picture, activities } = this.state;
+        activities.searchingOwner = true;
+        this.setState({ activities: activities });
+
+        // Flag up detecting face indicator
+        activities.searchOwnerProfile = true;
+        this.setState({ activities: activities });
+
+        const formData = new FormData();
+        formData.append('photo', {
+            uri: picture.uri,
+            type: picture.type,
+            name: picture.fileName
+        });
+
+        await send('/search_owner', formData)
+            .then(response => {
+                if(response.owner_id) {
+                    // The user may continue to search for the owner
+                    activities.searchOwnerProfile = false;
+                    activities.searchingOwner = false,
+                    this.setState({ activities: activities, picture: null, redirect: true,
+                        owner_id: ReportDispatcher.owner_id });
+                    this.props.navigation.navigate('FoundProfile', { 'userId': response.owner_id });
+                    
+                } else {
+                    // Ask user to choose another photo.
+                    activities.searchOwnerProfile = false;
+                    activities.searchingOwner = false;
+                    activities.noOwnerFound = true;
+                    this.setState({ activities: activities, picture: null });
+                }
+            },
+            () => {
+                // Something could have gone wrong
+                activities.searchOwnerProfile = false,
+                activities.searchingOwner = false,
+                this.setState({ somethingWrong: true, activities: activities });
+            }
+        )
+        .catch(() => {
+            // Catch request exceptions
+            activities.searchOwnerProfile= false,
+            activities.searchingOwner = false,
+            this.setState({ somethingWrong: true, activities: activities });
+        })
+    };
+
+    _tryAgain = () => {
+        // Restart the whole procedure
+        const { activities } = this.state;
+        activities.detectingFace = false,
+        activities.searchOwnerProfile = false,
+        activities.searchingOwner = false;
+        activities.noFaceDetected = false;
+        activities.noOwnerFound = false;
+        this.setState({ somethingWrong: false, activities: activities, picture: null })
+    };
+
     render() {
-        const { loading, somethingWrong, picture } = this.state;
+        const { loading, somethingWrong, picture, activities } = this.state;
 
         if(loading) {
             return <LoadingIndicator />;
 
-        } else if(picture) {
+        } else if(somethingWrong) {
+            return <FWrong tryAgain={ this._tryAgain } btnColor={ colors.purple } />
+
+        } else if(activities.detectingFace) {
+            return (
+                <FLoading
+                    title="Detecting Face In The Photo."
+                    subTitle="Please Wait..."
+                    loadingColor={ colors.purple }
+                />
+            );
+
+        } else if(activities.searchingOwner) {
+            return (
+                <FLoading title='Searching For Owner' loadingColor={ colors.purple } />
+            );
+            
+        } else if(activities.searchOwnerProfile) {
+            return (
+                <FPrompt
+                    title="Face Has Been Detected In The photo."
+                    subTitle="Continue To Search For The Owner."
+                    cancelable={ this._cancelSearchForOwner }
+                    acceptable={ this._continueSearchForOwner }
+                />
+            );
+        } else if(activities.noFaceDetected) {
+            return (
+                <FWrong
+                    title='No Face Has Been Detected In The Photo'
+                    btnColor={ colors.purple }
+                    tryAgain={ this._tryAgain }
+                />
+            );
+
+        } else if(activities.noOwnerFound) {
+            return (
+                <FWrong
+                    title='No Matching Owner Has Been Found'
+                    btnColor={ colors.purple }
+                    tryAgain={ this._tryAgain }
+                    btnTitle='OK'
+                />
+            );
+
+        }  else if(picture) {
             return (
                 <ScrollView>
                     <FindPanel
                         picture={ picture }
                         resetPicture={ this._resetPicture }
+                        detectFace={ this._detectFace }
                     />
 
                     <View style={ layout.padBottom }></View>
@@ -130,7 +307,7 @@ const Display = (props) => {
 
 
 const FindPanel = (props) => {
-    const { picture, resetPicture } = props;
+    const { picture, resetPicture, detectFace } = props;
 
     return (
         <View style={ layout.containerWhite }>
@@ -142,7 +319,7 @@ const FindPanel = (props) => {
                 <View style={ layout.column50 }>
                     <FButton
                         title='CANCEL'
-                        onPress={ resetPicture }
+                        handler={ resetPicture }
                         buttonStyles={{ width: '80%', borderRadius: 10 }}
                     />
                 </View>
@@ -150,6 +327,7 @@ const FindPanel = (props) => {
                 <View style={ layout.column50 }>
                     <FButton
                         title='SUBMIT'
+                        handler={ detectFace }
                         buttonStyles={{ width: '80%', borderRadius: 10, borderColor: colors.purple }}
                         textStyles={{ color: colors.purple }}
                     />

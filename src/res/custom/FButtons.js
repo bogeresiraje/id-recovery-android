@@ -5,8 +5,8 @@ import layout from '../st/layout';
 import { colors } from '../colors';
 
 
-export const FButton = ({ onPress, title='Submit', buttonStyles={}, textStyles={} }) => (
-    <TouchableOpacity style={ { ...button.style, ...buttonStyles } } onPress={ () => onPress() } >
+export const FButton = ({ handler, title='Submit', buttonStyles={}, textStyles={} }) => (
+    <TouchableOpacity style={ { ...button.style, ...buttonStyles } } onPress={ () => handler() } >
         <Text style={ { ...text.style, ...textStyles } }>{ title }</Text>
     </TouchableOpacity>
 );
