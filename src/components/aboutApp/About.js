@@ -18,10 +18,12 @@ export class About extends Component {
                 if(supported){
                     return Linking.openURL(url);
                 } else {
-                    alert(supported)
+                    // To do
                 }
             })
-            .catch((err) => alert(err.toString()))
+            .catch((err) => {
+                // To do
+            } )
     };
 
     _openPhone = () => {
@@ -31,10 +33,13 @@ export class About extends Component {
                 if(supported){
                     return Linking.openURL(url);
                 } else {
-                    alert(supported)
+                    // To do
                 }
             })
-            .catch((err) => alert(err.toString()))
+            .catch((err) => {
+                // To do
+            }
+        )
     };
 
     render() {

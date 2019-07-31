@@ -15,6 +15,7 @@ import { ChangeIDPhoto } from './profile/ChangeIDPhoto';
 import { FoundProfile } from './findID/FoundProfile';
 import { FIconButton } from '../res/custom/FButtons';
 import { colors } from '../res/colors';
+import { SendMessages, SendMessage } from './messages/SendMessage';
 
 
 // Initial component when the app is started
@@ -103,6 +104,12 @@ const mainNavigator = createStackNavigator(
             screen: FoundProfile,
             navigationOptions: () => ({
                 headerTitle: 'Found User',
+                ...inNavConfig,
+            })
+        },
+        SendMessage: {
+            screen: SendMessage,
+            navigationOptions: () => ({
                 ...inNavConfig,
             })
         },

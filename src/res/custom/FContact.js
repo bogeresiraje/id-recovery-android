@@ -24,7 +24,7 @@ export const FContact = (props) => {
                 </View>
             </View>
 
-            <FButton onPress={ open }
+            <FButton handler={ open }
                 title={ contact }
                 buttonStyles={{ borderWidth: 0, height: 20, marginTop: 0 }}
                 textStyles={{ color: colors.purple, textAlign: 'left', paddingTop: 2, marginLeft: '5%' }}

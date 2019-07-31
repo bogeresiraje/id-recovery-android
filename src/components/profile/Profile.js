@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, RefreshControl } from 'react-native';
+import { ScrollView, View, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { send, getHost } from '../../data/fetch';
 import layout from '../../res/st/layout';

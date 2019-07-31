@@ -4,8 +4,7 @@ import { FIcon, FImage } from './FImages';
 import { FText } from './FText';
 
 
-export const FContactPhoto = (props) => {
-    const { title, imageUrl } = props;
+export const FContactPhoto = ({ title='', imageUrl='', imageStyles={}  }) => {
 
     return (
         <View style={ layout.padded }>
@@ -23,6 +22,7 @@ export const FContactPhoto = (props) => {
 
             <FImage
                 source={{ uri: imageUrl }}
+                imageStyles={ imageStyles }
             />
         </View>
     );
