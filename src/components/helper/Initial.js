@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { isLoggedIn } from '../../data/auth';
+import { View, StatusBar } from 'react-native';
 import { LoadingIndicator } from './LoadingIndicator';
 import AsyncStorage from '@react-native-community/async-storage';
+import { colors } from '../../res/colors';
 
 
 export class Initial extends Component {
@@ -30,7 +31,12 @@ export class Initial extends Component {
         const { loading, loggedIn } = this.state;
 
         if(loading){
-            return <LoadingIndicator />;
+            return (
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+                    <LoadingIndicator />
+                </View>
+            );
 
         } else if(loggedIn){
             return this.props.navigation.navigate('Main');

@@ -2,20 +2,20 @@ import React from 'react';
 import { createStackNavigator, createAppContainer, createSwitchNavigator, createMaterialTopTabNavigator }
     from 'react-navigation';
 
-import { Login } from './accessControl/Login';
 import { Initial } from './helper/Initial';
-import { Posts } from './home/Posts';
-import { Profile } from './profile/Profile';
-import { Find } from './findID/Find';
-import { About } from './aboutApp/About';
 import { CreateAccount } from './accessControl/CreateAccount';
 import { ConfirmAccount } from './accessControl/ConfirmAccount';
+import { Login } from './accessControl/Login';
+import { Find } from './home/Find';
+import { FoundProfile } from './home/FoundProfile';
+import { SendMessage } from './messages/SendMessage';
+import { Profile } from './profile/Profile';
+import { About } from './aboutApp/About';
 import { ChangeProfilePhoto } from './profile/ChangeProfilePhoto';
 import { ChangeIDPhoto } from './profile/ChangeIDPhoto';
-import { FoundProfile } from './findID/FoundProfile';
 import { FIconButton } from '../res/custom/FButtons';
 import { colors } from '../res/colors';
-import { SendMessages, SendMessage } from './messages/SendMessage';
+import { Messages } from './messages/Messages';
 
 
 // Initial component when the app is started
@@ -51,13 +51,8 @@ const authNavigator = createStackNavigator(
 // Bottom tab navigator
 const topNavigator = createMaterialTopTabNavigator(
     {
-        Home: {
-            screen: Posts,
-            navigationOptions: {
-                // to do
-            }
-        },
-        Find: Find,
+        Home: Find,
+        Inbox: Messages,
         Profile: Profile,
     },
     {

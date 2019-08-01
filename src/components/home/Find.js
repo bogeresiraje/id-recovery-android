@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, StatusBar } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import { LoadingIndicator } from '../helper/LoadingIndicator';
 import { FHeading } from '../../res/custom/FText';
 import { FImageButton, FButton } from '../../res/custom/FButtons';
 import { FImage } from '../../res/custom/FImages';
@@ -12,7 +11,6 @@ import { send } from '../../data/fetch';
 import { FWrong } from '../../res/custom/FWrong';
 import { FLoading } from '../../res/custom/FLoading';
 import { FPrompt } from '../../res/custom/FPrompt';
-import ReportDispatcher from 'jest-jasmine2/build/jasmine/ReportDispatcher';
 
 
 export class Find extends Component {
@@ -198,56 +196,86 @@ export class Find extends Component {
         const { loading, somethingWrong, picture, activities } = this.state;
 
         if(loading) {
-            return <LoadingIndicator />;
+            return (
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+                    <LoadingIndicator />
+                </View>
+            );
 
         } else if(somethingWrong) {
-            return <FWrong tryAgain={ this._tryAgain } btnColor={ colors.purple } />
+            return (
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+                    <FWrong tryAgain={ this._tryAgain } btnColor={ colors.purple } />
+                </View>
+            )
 
         } else if(activities.detectingFace) {
             return (
-                <FLoading
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+                    <FLoading
                     title="Detecting Face In The Photo."
                     subTitle="Please Wait..."
                     loadingColor={ colors.purple }
-                />
+                    />
+                </View>
             );
 
         } else if(activities.searchingOwner) {
             return (
-                <FLoading title='Searching For Owner' loadingColor={ colors.purple } />
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+                    <FLoading title='Searching For Owner' loadingColor={ colors.purple } />
+                </View>
             );
             
         } else if(activities.searchOwnerProfile) {
             return (
-                <FPrompt
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+
+                    <FPrompt
                     title="Face Has Been Detected In The photo."
                     subTitle="Continue To Search For The Owner."
                     cancelable={ this._cancelSearchForOwner }
                     acceptable={ this._continueSearchForOwner }
-                />
+                    />
+                </View>
             );
         } else if(activities.noFaceDetected) {
             return (
-                <FWrong
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+
+                    <FWrong
                     title='No Face Has Been Detected In The Photo'
                     btnColor={ colors.purple }
                     tryAgain={ this._tryAgain }
-                />
+                    />
+                </View>
             );
 
         } else if(activities.noOwnerFound) {
             return (
-                <FWrong
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+
+                    <FWrong
                     title='No Matching Owner Has Been Found'
                     btnColor={ colors.purple }
                     tryAgain={ this._tryAgain }
                     btnTitle='OK'
-                />
+                    />
+                </View>
             );
 
         }  else if(picture) {
             return (
                 <ScrollView>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+
                     <FindPanel
                         picture={ picture }
                         resetPicture={ this._resetPicture }
@@ -261,6 +289,8 @@ export class Find extends Component {
         } else {
             return (
                 <ScrollView>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+
                     <Display
                         takePicture={ this._takePicture }
                         choosePicture={ this._choosePicture }
