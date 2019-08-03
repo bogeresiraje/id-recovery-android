@@ -99,12 +99,6 @@ export class FoundProfile extends Component {
         })
     };
 
-    _goToSendMessage = () => {
-        this.props.navigation.navigate('SendMessage',
-            { 'userId': this.state.user.id, 'userName': this.state.user.name }
-        );
-    };
-
     render() {
         const { loading, somethingWrong, refreshing, user } = this.state;
 
@@ -126,7 +120,6 @@ export class FoundProfile extends Component {
                         user={ user }
                         openEmail={ this._openEmail }
                         openPhone={ this._openPhone }
-                        goToSendMessage={ this._goToSendMessage }
                     /> 
 
                     <View style={ layout.padBottom }></View>
@@ -137,7 +130,7 @@ export class FoundProfile extends Component {
 }
 
 
-const UserInfo = ({ user, openEmail, openPhone, goToSendMessage }) => {
+const UserInfo = ({ user, openEmail, openPhone }) => {
     return (
         <View style={ layout.containerWhite }>
             <FHeading title={ user.name }
@@ -152,14 +145,6 @@ const UserInfo = ({ user, openEmail, openPhone, goToSendMessage }) => {
             />
 
             <FlexIDPhoto user={ user } />
-
-            <FButton
-                buttonStyles={{ borderColor: colors.purple, backgroundColor: colors.purple, width: '70%',
-                marginBottom: 40 }}
-                textStyles={{ color: colors.white }}
-                handler={ goToSendMessage }
-                title='send message'
-            />
 
             <FlexPhone user={ user } openPhone={ openPhone } />
 

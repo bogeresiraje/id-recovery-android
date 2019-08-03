@@ -48,7 +48,7 @@ export class About extends Component {
                 <View style={{ ...layout.containerWhite, padding: 15 }}>
                     <Text style={ text.leftBlack }>
                         <Text style={ text.boldBlack }>ID Recovery </Text>
-                        is an Mobile Application developed and maintained by
+                        is a Mobile Application developed and maintained by
                         <Text style={ text.boldBlack }> Morini LLC, </Text>
                         a ligh-weight software company located at
                         College of Computing and Information Sciences, Makerere University.

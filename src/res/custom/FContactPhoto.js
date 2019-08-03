@@ -29,9 +29,7 @@ export const FContactPhoto = ({ title='', imageUrl='', imageStyles={}  }) => {
 }
 
 
-export const FContactPhotoClickable = (props) => {
-    const { title, handler, imageUrl } = props;
-
+export const FContactPhotoClickable = ({ title, handler, imageUrl, imageStyles={} }) => {
     return (
         <View style={ layout.padded }>
             <View style={ layout.columnSeparator }>
@@ -49,6 +47,7 @@ export const FContactPhotoClickable = (props) => {
             <TouchableOpacity onPress={ () => handler() } activeOpacity={ 0.9 }>
                 <FImage
                     source={{ uri: imageUrl }}
+                    imageStyles={ imageStyles }
                 />
             </TouchableOpacity>
         </View>

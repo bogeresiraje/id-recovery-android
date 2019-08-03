@@ -95,6 +95,10 @@ const LoginForm = (props) => {
     const { navigation, nullField, email, password, handleEmail, wrongDetails,
         handlePassword, validateAndSubmit } = props;
 
+    const gotoCreateAccount = () => {
+        navigation.navigate('CreateAccount');
+    };
+
     return (
         <View style={{ ...layout.containerWhite, paddingTop: 50 }}>
 
@@ -122,14 +126,14 @@ const LoginForm = (props) => {
                 title='Log In'
                 buttonStyles={{ borderColor: colors.purple, backgroundColor: colors.purple }}
                 textStyles={{ color: colors.white }}
-                onPress={ validateAndSubmit }
+                handler={ validateAndSubmit }
             />
 
             <Text style={ text.autoBlack }>Don't Have an Account Yet?</Text>
 
             <FButton
                 title='Create Account'
-                onPress={ () => navigation.navigate('CreateAccount') }
+                handler={ gotoCreateAccount }
                 buttonStyles={{ borderColor: colors.purple, width: '60%', borderRadius: 10 }}
                 textStyles={{ color: colors.purple }}
             />

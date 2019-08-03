@@ -29,6 +29,8 @@ target 'id_recovery' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
 
+  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
   target 'id_recoveryTests' do
     inherit! :search_paths
     # Pods for testing

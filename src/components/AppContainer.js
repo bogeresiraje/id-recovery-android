@@ -16,6 +16,7 @@ import { ChangeIDPhoto } from './profile/ChangeIDPhoto';
 import { FIconButton } from '../res/custom/FButtons';
 import { colors } from '../res/colors';
 import { Messages } from './messages/Messages';
+import { HowTo } from './howTo/HowTo';
 
 
 // Initial component when the app is started
@@ -52,8 +53,13 @@ const authNavigator = createStackNavigator(
 const topNavigator = createMaterialTopTabNavigator(
     {
         Home: Find,
-        Inbox: Messages,
         Profile: Profile,
+        HowTo: {
+            screen: HowTo,
+            navigationOptions: () => ({
+                title: 'How To'
+            })
+        },
     },
     {
         initialRouteName: 'Home',
@@ -98,7 +104,7 @@ const mainNavigator = createStackNavigator(
         FoundProfile: {
             screen: FoundProfile,
             navigationOptions: () => ({
-                headerTitle: 'Found User',
+                headerTitle: 'Found Owner',
                 ...inNavConfig,
             })
         },

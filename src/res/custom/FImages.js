@@ -29,6 +29,8 @@ export const FImageClickable = ({ handler, source, imageStyles={} }) => (
         <Image
             style={ { ...image.style, ...imageStyles } }
             source={ source }
+            resizeMode='contain'
+            resizeMethod='resize'
         />
     </TouchableOpacity>
 );

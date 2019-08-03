@@ -26,7 +26,7 @@ export const FInputPrompt = (props) => {
                 <View style={ layout.column50 }>
                     <FButton
                         title={ cancel }
-                        onPress={ cancelable }
+                        handler={ cancelable }
                         buttonStyles={{ width: '60%', borderRadius: 10 }}
                     />
                 </View>
@@ -34,7 +34,7 @@ export const FInputPrompt = (props) => {
                 <View style={ layout.column50 }>
                     <FButton
                         title={ ok }
-                        onPress={ acceptable }
+                        handler={ acceptable }
                         buttonStyles={{ width: '60%', borderColor: colors.red, borderRadius: 10 }}
                         textStyles={{ color: colors.red }}
                     />

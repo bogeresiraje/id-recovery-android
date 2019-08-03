@@ -123,6 +123,10 @@ const Form = (props) => {
         handleUsername, handleEmail, handlePassword, handleConfirmPassword,
         validateAndSubmit, navigation, passwordsMatch, invalidEmail } = props;
 
+    const gotoConfirmAccount = () => {
+        navigation.navigate('ConfirmAccount');
+    };
+
     return (
         <View style={ { ...layout.containerWhite, paddingTop: 40 } }>
             <Text style={ text.autoBlack }>Name</Text>
@@ -165,7 +169,7 @@ const Form = (props) => {
             />
 
             <FButton
-                onPress={ validateAndSubmit }
+                handler={ validateAndSubmit }
                 buttonStyles={{ borderColor: colors.purple, backgroundColor: colors.purple }}
                 textStyles={{ color: colors.white }}
             />
@@ -174,7 +178,7 @@ const Form = (props) => {
 
             <FButton
                 title='Continue'
-                onPress={ () => navigation.navigate('ConfirmAccount') }
+                handler={ gotoConfirmAccount  }
                 buttonStyles={{ borderColor: colors.purple, width: '60%', borderRadius: 10 }}
                 textStyles={{ color: colors.purple }}
             />

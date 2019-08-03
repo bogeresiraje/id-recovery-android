@@ -115,7 +115,7 @@ const Form = (props) => {
             />
 
             <FButton
-                onPress={ () => validateAndSubmit() }
+                handler={  validateAndSubmit }
                 buttonStyles={{ width: '50%', borderRadius: 10, backgroundColor: colors.purple,
                     borderColor: colors.purple 
                 }}

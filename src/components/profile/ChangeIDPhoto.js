@@ -214,7 +214,7 @@ const FlexButton = ({ picture, submit }) => {
     if(picture){
         return (
             <FButton
-                onPress={ submit }
+                handler={ submit }
                 buttonStyles={{ borderRadius: 10, backgroundColor: colors.purple, borderColor: colors.purple,
                     width: '70%' }}
                 textStyles={{ color: colors.white }}

@@ -313,7 +313,7 @@ const UserInfo = (props) => {
 
                 <View style={ layout.column40 }>
                     <FButton
-                        onPress={ () => openEditName() }
+                        handler={ openEditName }
                         title='edit'
                         buttonStyles={{ width: '60%', borderRadius: 10, height: 30 }}
                         textStyles={{ paddingTop: 2 }}
@@ -325,6 +325,7 @@ const UserInfo = (props) => {
                 title='Profile Photo'
                 handler={ changeProfilePhoto }
                 imageUrl={ `${getHost.host}/uploads/${user.photo_name}`}
+                imageStyles={{ width: '90%', alignSelf: 'center' }}
             />
 
             <FlexIDPhoto user={ user } navigation={ navigation } changeIDPhoto={ changeIDPhoto } />
@@ -335,13 +336,13 @@ const UserInfo = (props) => {
 
             <FButton
                 title='Log Out'
-                onPress={ openLogout }
+                handler={ openLogout }
                 buttonStyles={{ borderRadius: 10, width: '90%' }}
             />
 
             <FButton
                 title='Delete Account'
-                onPress={ openDeleteAccount }
+                handler={ openDeleteAccount }
                 buttonStyles={{ borderColor: colors.red, borderRadius: 10, width: '90%' }}
                 textStyles={{ color: colors.red }}
             />
@@ -357,9 +358,12 @@ const FlexIDPhoto = ({ changeIDPhoto, user, navigation }) => {
             title='ID Photo'
             handler={ changeIDPhoto }
             imageUrl={ `${getHost.host}/uploads/${user.id_image_name}`}
+            imageStyles={{ width: '90%', alignSelf: 'center' }}
             />
         )
     } else {
+        const gotoChangeId = () => { navigation.navigate('ChangeIDPhoto') };
+
         return (
             <View style={ layout.columnSeparator }>
             <View style={ layout.column60 }>
@@ -368,7 +372,7 @@ const FlexIDPhoto = ({ changeIDPhoto, user, navigation }) => {
 
             <View style={ layout.column40 }>
                 <FButton
-                    onPress={ () => navigation.navigate('ChangeIDPhoto') }
+                    handler={ gotoChangeId }
                     title='edit'
                     buttonStyles={{ width: '60%', borderRadius: 10, height: 30 }}
                     textStyles={{ paddingTop: 2 }}
@@ -389,7 +393,7 @@ const Phone = ({ user, openEditPhone }) => {
 
             <View style={ layout.column40 }>
                 <FButton
-                    onPress={ () => openEditPhone() }
+                    handler={ openEditPhone }
                     title='edit'
                     buttonStyles={{ width: '60%', borderRadius: 10, height: 30 }}
                     textStyles={{ paddingTop: 2 }}

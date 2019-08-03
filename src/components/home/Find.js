@@ -155,7 +155,7 @@ export class Find extends Component {
                     activities.searchOwnerProfile = false;
                     activities.searchingOwner = false,
                     this.setState({ activities: activities, picture: null, redirect: true,
-                        owner_id: ReportDispatcher.owner_id });
+                        owner_id: response.owner_id });
                     this.props.navigation.navigate('FoundProfile', { 'userId': response.owner_id });
                     
                 } else {
@@ -343,6 +343,7 @@ const FindPanel = (props) => {
         <View style={ layout.containerWhite }>
             <FImage
                 source={ picture }
+                imageStyles={{ width: '90%', alignSelf: 'center' }}
             />
 
             <View style={ layout.columnSeparator }>
