@@ -124,6 +124,15 @@ export class ChangeIDPhoto extends Component {
                         ToastAndroid.LONG,
                         ToastAndroid.TOP,
                     )
+                } else if(response.no_face_detected) {
+                    // No face has been detected in the photo.
+                    // This can lead to poor results.
+                    this.setState({ activeIndicator: false, picture: null });
+                    ToastAndroid.showWithGravity(
+                        'No Face Has Been Detected In The Photo',
+                        ToastAndroid.LONG,
+                        ToastAndroid.TOP,
+                    )
                 } else {
                     // Something went wrong
                     this.setState({ activeIndicator: false, somethingWrong: true });

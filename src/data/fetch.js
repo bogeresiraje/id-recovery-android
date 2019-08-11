@@ -1,5 +1,6 @@
 
-const host = 'http://192.168.43.11:5000/api';
+// const host = 'https://id-recovery.herokuapp.com/api';
+const host = 'http://192.168.43.11:5000/api'
 
 
 

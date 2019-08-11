@@ -7,6 +7,7 @@ import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

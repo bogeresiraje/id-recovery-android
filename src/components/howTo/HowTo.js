@@ -45,47 +45,27 @@ const Display = () => {
         <View>
             <FHeading title='How To Use ID Recovery' headStyles={{ fontSize: 20 }} />
             <Text style={ text.leftBlack }>
-                1. Navigate to the home tab and upload the photo of lost ID from the gallery or directly from the camera.
+            <Text style={ text.boldBlack }>(a) </Text>
+                Navigate to the home tab and upload the photo of lost ID from the gallery or directly from the camera.
             </Text>
     
-            <Text style={ text.boldBlack }>(a)</Text>
-            <FImage source={ require('../../res/images/step1.png') }
-            />
-    
-            <Text style={ text.boldBlack }>(b)</Text>
-            <FImage source={ require('../../res/images/step6.png') }
-                imageStyles={{ height: 490 }}
-            />
-    
             <Text style={ text.leftBlack }>
-                2. Upload the selected photo to approve that it contains a human face in it, other wise,
+            <Text style={ text.boldBlack }>(b) </Text>
+                Upload the selected photo to approve that it contains a human face in it, other wise,
                 it's not an ID and you will be asked to upload another photo.
             </Text>
     
     
-            <Text style={ text.boldBlack }>(c)</Text>
-            <FImage source={ require('../../res/images/step3.png') }
-            />
-    
             <Text style={ text.leftBlack }>
-                3. When a face is detected in the ID photo, the user can then search for the owner of the ID from the databse.
+            <Text style={ text.boldBlack }>(c) </Text>   
+                When a face is detected in the ID photo, the user can then search for the owner of the ID from the databse.
                 If he is found, his profile and contact are returned thus he/she can be contacted.
             </Text>
     
-            <Text style={ text.boldBlack }>(d)</Text>
-            <FImage source={ require('../../res/images/step5.png') }
-                imageStyles={{ height: 490 }}
-            />
-
             <Text style={ text.leftBlack }>
-                4. When the ID owner has been discovered, he can be contacted either by phone or email.
+            <Text style={ text.boldBlack }>(d)</Text>
+                When the ID owner has been discovered, he can be contacted either by phone or email.
             </Text>
-    
-            <Text style={ text.boldBlack }>(e)</Text>
-            <FImage source={ require('../../res/images/step7.png') }
-                imageStyles={{ height: 490 }}
-            />
-
 
             <View style={ layout.padBottomWhite }></View>
     

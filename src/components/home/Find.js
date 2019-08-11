@@ -23,10 +23,8 @@ export class Find extends Component {
 
             // activities
             activities: {
-                detectingFace: false,
-                searchOwnerProfile: false,
-                noFaceDetected: false,
                 searchingOwner: false,
+                noFaceDetected: false,
                 noOwnerFound: false,
             },
 
@@ -76,63 +74,9 @@ export class Find extends Component {
         this.setState({ picture: null });
     };
 
-    // When a photo has been uploaded by the user, it should then be checked whether it contains a face
-    // If a face is found, then one can be asked to continue searching for the owner profile
-    // This is done by the server
-    _detectFace = async () => {
-        const { picture, activities } = this.state;
-
-        // Flag up detecting face indicator
-        activities.detectingFace = true;
-        this.setState({ activities: activities });
-
-        const formData = new FormData();
-        formData.append('photo', {
-            uri: picture.uri,
-            type: picture.type,
-            name: picture.fileName
-        });
-
-        await send('/detect_face', formData)
-            .then(response => {
-                if(response.face_detected) {
-                    // The user may continue to search for the owner
-                    activities.searchOwnerProfile = true;
-                    activities.detectingFace = false;
-                    this.setState({ activities: activities });
-                    
-                } else {
-                    // Ask user to choose another photo.
-                    activities.detectingFace = false;
-                    activities.noFaceDetected = true;
-                    this.setState({ activities: activities });
-                }
-            },
-            () => {
-                // Something could have gone wrong
-                activities.detectingFace = false,
-                this.setState({ somethingWrong: true, activities: activities });
-            }
-        )
-        .catch(() => {
-            // Catch request exceptions
-            activities.detectingFace = false,
-            this.setState({ somethingWrong: true, activities: activities });
-        })
-    };
-
-    // Cancel searching for the owner
-    _cancelSearchForOwner = () => {
-        const { activities } = this.state;
-        activities.searchOwnerProfile = false;
-        activities.detectingFace = false;
-        activities.noFaceDetected = false;
-
-        this.setState({ activities });
-    };
 
     // Continue searching for the owner
-    _continueSearchForOwner = async () => {
+    _searchOwner = async () => {
         const { picture, activities } = this.state;
         activities.searchingOwner = true;
         this.setState({ activities: activities });
@@ -158,18 +102,34 @@ export class Find extends Component {
                         owner_id: response.owner_id });
                     this.props.navigation.navigate('FoundProfile', { 'userId': response.owner_id });
                     
-                } else {
+                } else if (response.no_face_detected) {
+                    //
                     // Ask user to choose another photo.
-                    activities.searchOwnerProfile = false;
                     activities.searchingOwner = false;
+                    activities.noFaceDetected = true;
+                    activities.noOwnerFound = false;
+                    this.setState({ activities: activities });
+
+                } else if(response.no_owner_found) {
+                    // Ask user to choose another photo.
+                    activities.searchingOwner = false;
+                    activities.noFaceDetected = false;
                     activities.noOwnerFound = true;
                     this.setState({ activities: activities, picture: null });
+
+                } else {
+                    // Something went wrong
+                    activities.searchingOwner = false,
+                    activities.noFaceDetected = false,
+                    activities.noOwnerFound = false;
+                    this.setState({ somethingWrong: true, activities: activities });
                 }
             },
             () => {
                 // Something could have gone wrong
-                activities.searchOwnerProfile = false,
                 activities.searchingOwner = false,
+                activities.noFaceDetected = false,
+                activities.noOwnerFound = false;
                 this.setState({ somethingWrong: true, activities: activities });
             }
         )
@@ -184,8 +144,6 @@ export class Find extends Component {
     _tryAgain = () => {
         // Restart the whole procedure
         const { activities } = this.state;
-        activities.detectingFace = false,
-        activities.searchOwnerProfile = false,
         activities.searchingOwner = false;
         activities.noFaceDetected = false;
         activities.noOwnerFound = false;
@@ -211,40 +169,19 @@ export class Find extends Component {
                 </View>
             )
 
-        } else if(activities.detectingFace) {
+        } else if(activities.searchingOwner) {
             return (
                 <View>
                     <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
                     <FLoading
-                    title="Detecting Face In The Photo."
+                    title="Searching For Owner."
                     subTitle="Please Wait..."
                     loadingColor={ colors.purple }
                     />
                 </View>
             );
 
-        } else if(activities.searchingOwner) {
-            return (
-                <View>
-                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
-                    <FLoading title='Searching For Owner' loadingColor={ colors.purple } />
-                </View>
-            );
-            
-        } else if(activities.searchOwnerProfile) {
-            return (
-                <View>
-                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
-
-                    <FPrompt
-                    title="Face Has Been Detected In The photo."
-                    subTitle="Continue To Search For The Owner."
-                    cancelable={ this._cancelSearchForOwner }
-                    acceptable={ this._continueSearchForOwner }
-                    />
-                </View>
-            );
-        } else if(activities.noFaceDetected) {
+        } if(activities.noFaceDetected) {
             return (
                 <View>
                     <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
@@ -279,7 +216,7 @@ export class Find extends Component {
                     <FindPanel
                         picture={ picture }
                         resetPicture={ this._resetPicture }
-                        detectFace={ this._detectFace }
+                        detectFace={ this._searchOwner }
                     />
 
                     <View style={ layout.padBottom }></View>
