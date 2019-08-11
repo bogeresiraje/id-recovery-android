@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, TextInput, Text } from 'react-native';
+import { ScrollView, View, TextInput, Text, StatusBar } from 'react-native';
 import { FButton } from '../../res/custom/FButtons';
 import layout from '../../res/st/layout';
 import input from '../../res/st/input';
@@ -8,6 +8,8 @@ import { colors } from '../../res/colors';
 import { NullInputAlert, TextAlert } from '../../res/custom/FText';
 import { send } from '../../data/fetch';
 import { saveCred } from '../../data/auth';
+import FIndicator from '../../res/custom/FIndicator';
+import { FWrong } from '../../res/custom/FWrong';
 
 
 export class Login extends Component {
@@ -67,14 +69,24 @@ export class Login extends Component {
         .catch(() => this.setState({ activeIndicator: false, somethingWrong: true }) )
     };
 
+    _tryAgain = () => {
+        this.setState({ somethingWrong: false });
+    };
+
     render() {
         const { somethingWrong, activeIndicator, nullField, email, password, wrongDetails } = this.state;
 
         if(somethingWrong) {
-            return <View></View>;
+            return (
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+                    <FWrong tryAgain={ this._tryAgain } />
+                </View>
+            );
         } else {
             return (
                 <ScrollView>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
                     <LoginForm
                         navigation={ this.props.navigation }
                         nullField={ nullField }
@@ -83,6 +95,7 @@ export class Login extends Component {
                         password={ password }
                         handleEmail={ this._handlerEmail }
                         handlePassword={ this._handlePassword }
+                        activeIndicator={ activeIndicator }
                         validateAndSubmit={ this._validateAndSubmit }
                     />
                 </ScrollView>
@@ -92,7 +105,7 @@ export class Login extends Component {
 }
 
 const LoginForm = (props) => {
-    const { navigation, nullField, email, password, handleEmail, wrongDetails,
+    const { navigation, activeIndicator, nullField, email, password, handleEmail, wrongDetails,
         handlePassword, validateAndSubmit } = props;
 
     const gotoCreateAccount = () => {
@@ -122,12 +135,7 @@ const LoginForm = (props) => {
                 onChangeText = { password => handlePassword(password) }
             />
 
-            <FButton
-                title='Log In'
-                buttonStyles={{ borderColor: colors.purple, backgroundColor: colors.purple }}
-                textStyles={{ color: colors.white }}
-                handler={ validateAndSubmit }
-            />
+            <SubmitBtn activeIndicator={ activeIndicator} validateAndSubmit={ validateAndSubmit } />
 
             <Text style={ text.autoBlack }>Don't Have an Account Yet?</Text>
 
@@ -141,3 +149,21 @@ const LoginForm = (props) => {
         </View>
     );
 }
+
+
+const SubmitBtn = ({ activeIndicator, validateAndSubmit }) => {
+    if(activeIndicator) {
+        return (
+            <FIndicator bColor={ colors.purple } color={ colors.white } />
+        );
+    } else {
+        return (
+            <FButton
+                title='Log In'
+                buttonStyles={{ borderColor: colors.purple, backgroundColor: colors.purple }}
+                textStyles={{ color: colors.white }}
+                handler={ validateAndSubmit }
+            />
+        );
+    }
+};

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, ToastAndroid } from 'react-native';
-import { LoadingIndicator } from '../helper/LoadingIndicator';
+import { ScrollView, View, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import layout from '../../res/st/layout';
@@ -11,6 +10,7 @@ import { FImage } from '../../res/custom/FImages';
 import { colors } from '../../res/colors';
 import { FLoading } from '../../res/custom/FLoading';
 import { FWrong } from '../../res/custom/FWrong';
+import FIndicator from '../../res/custom/FIndicator';
 
 
 export class ChangeProfilePhoto extends Component {
@@ -134,7 +134,7 @@ export class ChangeProfilePhoto extends Component {
     };
 
     render() {
-        const { loading, somethingWrong, picture, user } = this.state;
+        const { loading, activeIndicator, somethingWrong, picture, user } = this.state;
 
         if(loading) {
             return <FLoading loadingColor={ colors.purple } />;
@@ -150,6 +150,7 @@ export class ChangeProfilePhoto extends Component {
                         picture={ picture }
                         choosePicture={ this._choosePicture }
                         takePicture={ this._takePicture }
+                        activeIndicator={ activeIndicator }
                         submit={ this._submit }
                     />
                     <View style={ layout.padBottom }></View>
@@ -161,7 +162,7 @@ export class ChangeProfilePhoto extends Component {
 
 
 const Display = (props) => {
-    const { user, picture, choosePicture, takePicture, submit } = props;
+    const { user, activeIndicator, picture, choosePicture, takePicture, submit } = props;
 
     return (
         <View style={ layout.containerWhite }>
@@ -183,7 +184,7 @@ const Display = (props) => {
                 textStyles={ { textAlign: 'left' } }
             />
 
-            <FlexButton picture={ picture } submit={ submit } />
+            <FlexButton activeIndicator={ activeIndicator } picture={ picture } submit={ submit } />
         </View>
     );
 };
@@ -205,16 +206,27 @@ const FlexPhoto = ({ user, picture }) => {
 };
 
 
-const FlexButton = ({ picture, submit }) => {
+const FlexButton = ({ activeIndicator, picture, submit }) => {
     if(picture){
-        return (
-            <FButton
-                handler={ submit }
-                buttonStyles={{ borderRadius: 10, backgroundColor: colors.purple, borderColor: colors.purple,
-                    width: '70%' }}
-                textStyles={{ color: colors.white }}
-            />
-        );
+        if(activeIndicator){
+            return (
+                <FIndicator
+                    vStyles={{ borderRadius: 10, width: '70%' }}
+                    bColor={ colors.purple } color={ colors.white }
+                />
+            )
+        }
+        else {
+            return (
+                <FButton
+                    handler={ submit }
+                    buttonStyles={{ borderRadius: 10, backgroundColor: colors.purple, borderColor: colors.purple,
+                        width: '70%' }}
+                    textStyles={{ color: colors.white }}
+                />
+            );
+        }
+
     } else {
         return null;
     }

@@ -12,9 +12,9 @@ export const FButton = ({ handler, title='Submit', buttonStyles={}, textStyles={
 );
 
 
-export const FIconButton = ({ onPress, source='', buttonStyles={}, iconStyles={} }) => (
-    <TouchableOpacity style={ { ...icon.style, ...iconStyles } } onPress={ () => onPress() } >
-        <FIcon source={ source } />
+export const FIconButton = ({ onPress, source='', iconStyles={} }) => (
+    <TouchableOpacity style={ { ...icon.style } } onPress={ () => onPress() } >
+        <FIcon source={ source } iconStyles={ iconStyles } />
     </TouchableOpacity>
 );
 

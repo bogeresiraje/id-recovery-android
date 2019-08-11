@@ -7,15 +7,13 @@ import { CreateAccount } from './accessControl/CreateAccount';
 import { ConfirmAccount } from './accessControl/ConfirmAccount';
 import { Login } from './accessControl/Login';
 import { Find } from './home/Find';
-import { FoundProfile } from './home/FoundProfile';
-import { SendMessage } from './messages/SendMessage';
 import { Profile } from './profile/Profile';
 import { About } from './aboutApp/About';
+import { FoundProfile } from './home/FoundProfile';
 import { ChangeProfilePhoto } from './profile/ChangeProfilePhoto';
 import { ChangeIDPhoto } from './profile/ChangeIDPhoto';
 import { FIconButton } from '../res/custom/FButtons';
 import { colors } from '../res/colors';
-import { Messages } from './messages/Messages';
 import { HowTo } from './howTo/HowTo';
 
 
@@ -35,16 +33,24 @@ const authNavigator = createStackNavigator(
     {
         Login: {
             screen: Login,
+            navigationOptions: () => ({
+                ...navConfig
+            })
         },
         CreateAccount: {
             screen: CreateAccount,
+            navigationOptions: () => ({
+                headerTitle: 'Create Account',
+                ...inNavConfig
+            })
         },
         ConfirmAccount: {
-            screen: ConfirmAccount
+            screen: ConfirmAccount,
+            navigationOptions: () => ({
+                headerTitle: 'ConfirmAccount',
+                ...inNavConfig
+            })
         }
-    },
-    {
-        headerMode: 'none',
     }
 );
 
@@ -90,7 +96,7 @@ const mainNavigator = createStackNavigator(
         Tab: {
             screen: TopTab,
             navigationOptions: ({ navigation }) => ({
-                headerTitle: 'ID Recovery',
+                headerTitle: 'ID Finder',
                 headerRight: (
                     <FIconButton
                         source={ require('../res/icons/about.png')}
@@ -105,12 +111,6 @@ const mainNavigator = createStackNavigator(
             screen: FoundProfile,
             navigationOptions: () => ({
                 headerTitle: 'Found Owner',
-                ...inNavConfig,
-            })
-        },
-        SendMessage: {
-            screen: SendMessage,
-            navigationOptions: () => ({
                 ...inNavConfig,
             })
         },

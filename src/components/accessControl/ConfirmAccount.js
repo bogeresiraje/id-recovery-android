@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TextInput } from 'react-native';
+import { ScrollView, View, Text, TextInput, StatusBar } from 'react-native';
 import layout from '../../res/st/layout';
 import text from '../../res/st/text';
 import { NullInputAlert, TextAlert } from '../../res/custom/FText';
@@ -8,6 +8,8 @@ import { FButton } from '../../res/custom/FButtons';
 import { colors } from '../../res/colors';
 import { send } from '../../data/fetch';
 import { saveCred } from '../../data/auth';
+import FIndicator from '../../res/custom/FIndicator';
+import { FWrong } from '../../res/custom/FWrong';
 
 
 export class ConfirmAccount extends Component {
@@ -72,21 +74,32 @@ export class ConfirmAccount extends Component {
             .catch(() => this.setState({ somethingWrong: true, activeIndicator: false }))
     };
 
+    _tryAgain = () => {
+        this.setState({ somethingWrong: false, activeIndicator: false });
+    };
+
     render() {
-        const { somethingWrong, code, nullField, wrongCode, invalidCode } = this.state;
+        const { somethingWrong, activeIndicator, code, nullField, wrongCode, invalidCode } = this.state;
 
         if(somethingWrong) {
-            return <View></View>
+            return (
+                <View>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
+                    <FWrong tryAgain={ this._tryAgain } />
+                </View>
+            );
 
         } else {
             return (
                 <ScrollView>
+                    <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
                     <Form
                         nullField={ nullField }
                         code={ code }
                         wrongCode={ wrongCode }
                         invalidCode={ invalidCode }
                         handleCode={ this._handleCode }
+                        activeIndicator={ activeIndicator }
                         validateAndSubmit={ this._validateAndSubmit }
                     />
                 </ScrollView>
@@ -97,7 +110,7 @@ export class ConfirmAccount extends Component {
 
 
 const Form = (props) => {
-    const { code, handleCode, nullField, validateAndSubmit, wrongCode, invalidCode } = props;
+    const { code, activeIndicator, handleCode, nullField, validateAndSubmit, wrongCode, invalidCode } = props;
 
     return (
         <View style={ {...layout.containerWhite, paddingTop: 70 } }>
@@ -114,13 +127,31 @@ const Form = (props) => {
                 keyboardType='number-pad'
             />
 
+            <SubmitBtn activeIndicator={ activeIndicator } handler={ validateAndSubmit } />
+            
+        </View>
+    );
+}
+
+
+const SubmitBtn = ({ activeIndicator, handler }) => {
+    if(activeIndicator){
+        return (
+            <FIndicator
+                bColor={ colors.purple }
+                color={ colors.white }
+                vStyles={{ width: '50%', borderRadius: 10 }}
+            />
+        );
+    } else {
+        return (
             <FButton
-                handler={  validateAndSubmit }
+                handler={  handler }
                 buttonStyles={{ width: '50%', borderRadius: 10, backgroundColor: colors.purple,
                     borderColor: colors.purple 
                 }}
                 textStyles={{ color: colors.white }}
             />
-        </View>
-    );
-}
+        );
+    }
+};

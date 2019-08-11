@@ -7,6 +7,8 @@ import input from '../../res/st/input';
 import { FButton } from '../../res/custom/FButtons';
 import { colors } from '../../res/colors';
 import { send } from '../../data/fetch';
+import { FWrong } from '../../res/custom/FWrong';
+import FIndicator from '../../res/custom/FIndicator';
 
 
 export class CreateAccount extends Component {
@@ -83,12 +85,20 @@ export class CreateAccount extends Component {
             .catch(() => this.setState({ activeIndicator: false, somethingWrong: true }))
     };
 
+    _tryAgain = () => {
+        this.setState({ somethingWrong: false });
+    };
+
     render() {
         const { somethingWrong, activeIndicator, nullField, username, email, password,
             confirmPassword, invalidEmail } = this.state;
 
         if(somethingWrong){
-            return <View><Text>Something Wrong</Text></View>
+            return (
+                <View>
+                    <FWrong tryAgain={ this._tryAgain } />
+                </View>
+            );
 
         } else {
             return (
@@ -168,11 +178,7 @@ const Form = (props) => {
                 onChangeText={ confirmPassword => handleConfirmPassword(confirmPassword) }
             />
 
-            <FButton
-                handler={ validateAndSubmit }
-                buttonStyles={{ borderColor: colors.purple, backgroundColor: colors.purple }}
-                textStyles={{ color: colors.white }}
-            />
+            <SubmitBtn activeIndicator={ activeIndicator } validateAndSubmit={ validateAndSubmit } />
 
             <Text style={ text.autoBlack }>Already Received Code?</Text>
 
@@ -196,5 +202,22 @@ const NonMatchPasswords = ({ value, passwordsMatch }) => {
         }
     } else {
         return null;
+    }
+};
+
+
+const SubmitBtn = ({ activeIndicator, validateAndSubmit }) => {
+    if(activeIndicator) {
+        return (
+            <FIndicator bColor={ colors.purple } color={ colors.white } />
+        );
+    } else {
+        return (
+            <FButton
+                handler={ validateAndSubmit }
+                buttonStyles={{ borderColor: colors.purple, backgroundColor: colors.purple }}
+                textStyles={{ color: colors.white }}
+            />
+        );
     }
 };

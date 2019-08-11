@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { View, StatusBar } from 'react-native';
-import { LoadingIndicator } from './LoadingIndicator';
 import AsyncStorage from '@react-native-community/async-storage';
 import { colors } from '../../res/colors';
+import { FLoading } from '../../res/custom/FLoading';
+import layout from '../../res/st/layout';
 
 
 export class Initial extends Component {
@@ -32,9 +33,9 @@ export class Initial extends Component {
 
         if(loading){
             return (
-                <View>
+                <View style={{ ...layout.containerWhite, backgroundColor: colors.purple }}>
                     <StatusBar backgroundColor={ colors.purple } barStyle='light-content' />
-                    <LoadingIndicator />
+                    <FLoading loadingColor={ colors.white } />
                 </View>
             );
 
