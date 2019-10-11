@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, ToastAndroid } from 'react-native';
+import { ScrollView, View, Text, TextInput, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import layout from '../../res/st/layout';
@@ -12,9 +12,11 @@ import { FHeading } from '../../res/custom/FText';
 import { FLoading } from '../../res/custom/FLoading';
 import { FWrong } from '../../res/custom/FWrong';
 import FIndicator from '../../res/custom/FIndicator';
+import input from '../../res/st/input';
+import text from '../../res/st/text';
 
 
-export class ChangeIDPhoto extends Component {
+export class AddIDPhoto extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,6 +25,8 @@ export class ChangeIDPhoto extends Component {
             activeIndicator: false,
 
             user: {},
+            email: '',
+            identifier: '',
 
             // Edit details
             picture: null,
@@ -36,30 +40,17 @@ export class ChangeIDPhoto extends Component {
     _getUser = async () => {
         const email = await AsyncStorage.getItem('email');
         if(email) {
-            this._submitProfileForm(email);
+            this.setState({ email: email, loading: false });
 
         } else {
             this.props.navigation.navigate('Auth');
         }
     };
 
-    // Submit post request to server
-    _submitProfileForm = async email => {
-        const formData = new FormData();
-        formData.append('email', email);
-
-        await send('/get_user', formData)
-            .then(response => {
-                if(response.user) {
-                    this.setState({ loading: false, user: response.user });
-                } else {
-                    this.setState({ loading: false, somethingWrong: true });
-                }
-            },
-            () => this.setState({ loading: false, somethingWrong: true })
-        )
-        .catch(() => this.setState({ loading: false, somethingWrong: true }) )
+    _handleIdentifier = identifier => {
+        this.setState({ identifier: identifier });
     };
+
 
     // Take photo from camera
     _takePicture = async () => {
@@ -104,26 +95,28 @@ export class ChangeIDPhoto extends Component {
         this.setState({ activeIndicator: true });
 
         // values
-        const { user, picture } = this.state;
+        const { email, identifier, picture } = this.state;
 
         const formData = new FormData();
-        formData.append('email', user.email);
+        formData.append('email', email);
+        formData.append('identifier', identifier);
         formData.append('photo', {
             uri: picture.uri,
             type: picture.type,
             name: picture.fileName,
          });
 
-         send('/change_id_photo', formData)
+         send('/add_id_photo', formData)
             .then(response => {
-                if(response.user){
+                if(response.user_id){
                     // Successfully Updated Profile Photo
-                    this.setState({ activeIndicator: false, user: response.user, picture: null });
+                    this.setState({ activeIndicator: false, picture: null });
                     ToastAndroid.showWithGravity(
                         'Successfully Updated ID Photo',
                         ToastAndroid.LONG,
                         ToastAndroid.TOP,
                     )
+                    this.props.navigation.navigate('ViewAll', { user_id: response.user_id });
                 } else if(response.no_face_detected) {
                     // No face has been detected in the photo.
                     // This can lead to poor results.
@@ -143,14 +136,18 @@ export class ChangeIDPhoto extends Component {
         .catch(() => this.setState({ activeIndicator: false, somethingWrong: true }) )
     };
 
+    _tryAgain = () => {
+        this.setState({ somethingWrong: false });
+    };
+
     render() {
-        const { loading, activeIndicator, somethingWrong, picture, user } = this.state;
+        const { loading, activeIndicator, somethingWrong, picture, user, identifier } = this.state;
 
         if(loading) {
             return <FLoading loadingColor={ colors.purple } />;
 
         } else if(somethingWrong) {
-            return <FWrong tryAgain={ f => f } btnColor={ colors.purple } />
+            return <FWrong tryAgain={ this._tryAgain } btnColor={ colors.purple } />
 
         } else {
             return (
@@ -161,6 +158,8 @@ export class ChangeIDPhoto extends Component {
                         choosePicture={ this._choosePicture }
                         takePicture={ this._takePicture }
                         activeIndicator={ activeIndicator }
+                        identifier={ identifier }
+                        handleIdentifier={ this._handleIdentifier }
                         submit={ this._submit }
                     />
                     <View style={ layout.padBottom }></View>
@@ -172,10 +171,17 @@ export class ChangeIDPhoto extends Component {
 
 
 const Display = (props) => {
-    const { user, picture, choosePicture, takePicture, activeIndicator, submit } = props;
+    const { user, picture, choosePicture, takePicture, activeIndicator, identifier,
+        handleIdentifier, submit } = props;
 
     return (
         <View style={ layout.containerWhite }>
+            <Text style={ text.autoBlack }>Name of ID</Text>
+
+            <TextInput style={ input.inputText } value={ identifier }
+                onChangeText={ text => handleIdentifier(text) } 
+            />
+
             <FlexPhoto user={ user } picture={ picture } />
 
             <FImageButton 
@@ -199,24 +205,16 @@ const Display = (props) => {
     );
 };
 
-const FlexPhoto = ({ user, picture }) => {
+const FlexPhoto = ({ picture }) => {
     if(picture) {
         return (
             <FImage
                 source={ picture }
             />
         );
-    } else if(user.id_image_name) {
-        return (
-            <FImage
-                source={{ uri: `${getHost.host}/uploads/${user.id_image_name}` }}
-            />
-        );
     } else {
-        return (
-            <FHeading title='No ID Photo Available Yet' headStyles={{ fontSize: 15 }} />
-        )
-    }
+        return null;
+    } 
 };
 
 

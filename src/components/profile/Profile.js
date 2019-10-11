@@ -13,6 +13,7 @@ import { deleteCred } from '../../data/auth';
 import { FInputPrompt } from '../../res/custom/FInputPrompt';
 import { FWrong } from '../../res/custom/FWrong';
 import { FLoading } from '../../res/custom/FLoading';
+import { FImage } from '../../res/custom/FImages';
 
 
 export class Profile extends Component {
@@ -36,6 +37,12 @@ export class Profile extends Component {
             // Edit phone
             editPhoneOpen: false,
             phone: '',
+
+            // Indicators.
+            logingOut: false,
+            deletingIndicator: false,
+            nameIndicator: false,
+            phoneIndicator: false,
         };
     }
 
@@ -117,6 +124,7 @@ export class Profile extends Component {
     // Change user name in the database
     _editName = async () => {
         const { user, name } = this.state;
+        this.setState({ nameIndicator: true });
         const formData = new FormData();
         formData.append('email', user.email);
         formData.append('name', name);
@@ -124,14 +132,14 @@ export class Profile extends Component {
         send('/edit_name', formData)
             .then(response => {
                 if(response.user) {
-                    this.setState({ user: response.user, activeIndicator: false, editNameOpen: false });
+                    this.setState({ user: response.user, nameIndicator: false, editNameOpen: false });
                 } else {
-                    this.setState({ activeIndicator: false, editNameOpen: false, somethingWrong: true });
+                    this.setState({ nameIndicator: false, editNameOpen: false, somethingWrong: true });
                 }
             },
-            () => this.setState({ activeIndicator: false, editNameOpen: false, somethingWrong: true })
+            () => this.setState({ nameIndicator: false, editNameOpen: false, somethingWrong: true })
         )
-        .catch(() => this.setState({ activeIndicator: false, editNameOpen: false, somethingWrong: true }) )
+        .catch(() => this.setState({ nameIndicator: false, editNameOpen: false, somethingWrong: true }) )
     };
 
     // Open edit phone form
@@ -150,6 +158,7 @@ export class Profile extends Component {
 
     _editPhone = async () => {
         const { user, phone } = this.state;
+        this.setState({ phoneIndicator: true });
         const formData = new FormData();
         formData.append('email', user.email);
         formData.append('phone', phone);
@@ -157,14 +166,14 @@ export class Profile extends Component {
         send('/edit_phone', formData)
             .then(response => {
                 if(response.user) {
-                    this.setState({ user: response.user, activeIndicator: false, editPhoneOpen: false });
+                    this.setState({ user: response.user, phoneIndicator: false, editPhoneOpen: false });
                 } else {
-                    this.setState({ activeIndicator: false, editPhoneOpen: false, somethingWrong: true });
+                    this.setState({ phoneIndicator: false, editPhoneOpen: false, somethingWrong: true });
                 }
             },
-            () => this.setState({ activeIndicator: false, editPhoneOpen: false, somethingWrong: true })
+            () => this.setState({ phoneIndicator: false, editPhoneOpen: false, somethingWrong: true })
         )
-        .catch(() => this.setState({ activeIndicator: false, editPhoneOpen: false, somethingWrong: true }) )
+        .catch(() => this.setState({ phoneIndicator: false, editPhoneOpen: false, somethingWrong: true }) )
     };
 
     // For logging out
@@ -177,6 +186,7 @@ export class Profile extends Component {
     };
 
     _logout = async () => {
+        this.setState({ logingOut: true });
         const formData = new FormData();
         formData.append('email', this.state.user.email);
 
@@ -187,12 +197,12 @@ export class Profile extends Component {
                     deleteCred();
                     this.props.navigation.navigate('Auth');
                 } else {
-                    this.setState({ activeIndicator: false, somethingWrong: true });
+                    this.setState({ logingOut: false, somethingWrong: true });
                 }
             },
-            () => this.setState({ activeIndicator: false, somethingWrong: true })
+            () => this.setState({ logingOut: false, somethingWrong: true })
         )
-        .catch(() => this.setState({ activeIndicator: false, somethingWrong: true }) )
+        .catch(() => this.setState({ logingOut: false, somethingWrong: true }) )
     };
 
     // For deleting account
@@ -204,7 +214,25 @@ export class Profile extends Component {
         this.setState({ deleteAccountPrompt: false });
     };
 
-    _deleteAccount = async () => {};
+    _deleteAccount = async () => {
+        const { id } = this.state.user;
+        this.setState({ deletingIndicator: true });
+        const formData = new FormData()
+        formData.append('user_id', id);
+        await send('/delete_account', formData)
+            .then(
+                response => {
+                    if(response.success){
+                        deleteCred();
+                        this.props.navigation.navigate('Auth');
+                    } else {
+                        this.setState({ somethingWrong: true, deletingIndicator: false });
+                    }
+                },
+                () => this.setState({ somethingWrong: true, deletingIndicator: false })
+            )
+            .catch(() => this.setState({ somethingWrong: true, deletingIndicator: false }) )
+    };
 
     _tryAgain = () => {
         this.setState({ loading: true, somethingWrong: false });
@@ -213,13 +241,38 @@ export class Profile extends Component {
 
     render() {
         const { loading, somethingWrong, refreshing, user, logoutPrompt, deleteAccountPrompt,
-            editNameOpen, name, editPhoneOpen, phone } = this.state;
+            editNameOpen, name, editPhoneOpen, phone, deletingIndicator, nameIndicator,
+            phoneIndicator, logingOut } = this.state;
 
         if(loading) {
             return <FLoading loadingColor={ colors.purple } />;
 
+        } else if(logingOut){
+            // loging out indicator
+            return (
+                <FLoading title='Loging Out...' loadingColor={ colors.purple } />
+            );
+
+        } else if(nameIndicator) {
+            // Edit name indicator.
+            return (
+                <FLoading title='Editing Name...' loadingColor={ colors.purple } />
+            );
+
+        } else if(phoneIndicator) {
+            // Editing phone indicator.
+            return (
+                <FLoading title='Editing Phone...' loadingColor={ colors.purple } />
+            );
+
+        } else if(deletingIndicator) {
+            // Deleting account indicator.
+            return (
+                <FLoading title='Deleting Account...' loadingColor={ colors.purple } />
+            );
+
         } else if(somethingWrong) {
-            return <FWrong tryAgain={ this._tryAgain } btnColor={ colors.purple } />
+            return <FWrong tryAgain={ this._tryAgain } />
 
         } else if(editNameOpen){
             // Edit name
@@ -351,19 +404,39 @@ const UserInfo = (props) => {
 };
 
 
-const FlexIDPhoto = ({ changeIDPhoto, user, navigation }) => {
-    if(user.id_image_name) {
-        return (
-            <FContactPhotoClickable
-            title='ID Photo'
-            handler={ changeIDPhoto }
-            imageUrl={ `${getHost.host}/uploads/${user.id_image_name}`}
-            imageStyles={{ width: '90%', alignSelf: 'center' }}
-            />
-        )
-    } else {
-        const gotoChangeId = () => { navigation.navigate('ChangeIDPhoto') };
+const FlexIDPhoto = ({ user, navigation }) => {
+    const { length } = user.photos;
+    const gotoChangeId = () => { navigation.navigate('ChangeIDPhoto') };
+    const viewAll = () => { navigation.navigate('ViewAll', { user_id: user.id }) };
 
+    if(length) {
+        return (
+            <View style={{ padding: 10 }}>
+                <FImage source={{ uri: `${getHost.host}/uploads/${user.photos[0].photo_name}` }}
+                />
+                <View style={ layout.columnSeparator }>
+                    <View style={ layout.column60 }>
+                        <FButton
+                            handler={ viewAll }
+                            title={ `${length} IDs`}
+                            buttonStyles={{ width: '60%', borderWidth: 0, height: 30 }}
+                            textStyles={{ paddingTop: 2, color: colors.purple }}
+                        />
+                    </View>
+
+                    <View style={ layout.column40 }>
+                        <FButton
+                            handler={ gotoChangeId }
+                            title='ADD'
+                            buttonStyles={{ width: '60%', borderWidth: 0, height: 30 }}
+                            textStyles={{ paddingTop: 2, color: colors.purple }}
+                        />
+                    </View> 
+                </View>
+            </View>
+        )
+
+    } else {
         return (
             <View style={ layout.columnSeparator }>
             <View style={ layout.column60 }>
@@ -373,7 +446,7 @@ const FlexIDPhoto = ({ changeIDPhoto, user, navigation }) => {
             <View style={ layout.column40 }>
                 <FButton
                     handler={ gotoChangeId }
-                    title='edit'
+                    title='add'
                     buttonStyles={{ width: '60%', borderRadius: 10, height: 30 }}
                     textStyles={{ paddingTop: 2 }}
                 />

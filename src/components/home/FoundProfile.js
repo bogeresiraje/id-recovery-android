@@ -28,21 +28,9 @@ export class FoundProfile extends Component {
     }
 
     // Submit post request to server
-    _getUser = async () => {
-        const formData = new FormData();
-        formData.append('user_id', this.props.navigation.getParam('userId'));
-
-        await send('/get_user_by_id', formData)
-            .then(response => {
-                if(response.user) {
-                    this.setState({ loading: false, user: response.user });
-                } else {
-                    this.setState({ loading: false, somethingWrong: true });
-                }
-            },
-            () => this.setState({ loading: false, somethingWrong: true })
-        )
-        .catch(() => this.setState({ loading: false, somethingWrong: true }) )
+    _getUser = () => {
+        const user = this.props.navigation.getParam('user');
+        this.setState({ user: user, loading: false })
     };
 
     _refresh = async () => {
@@ -54,7 +42,7 @@ export class FoundProfile extends Component {
         await send('/get_user_by_id', formData)
             .then(response => {
                 if(response.user) {
-                    this.setState({ refreshing: false, user: response.user });
+                    this.setState({ refreshing: false });
                 } else {
                     this.setState({ refreshing: false, somethingWrong: true });
                 }
@@ -156,11 +144,11 @@ const UserInfo = ({ user, openEmail, openPhone }) => {
 
 
 const FlexIDPhoto = ({ user }) => {
-    if(user.id_image_name) {
+    if(user.found_id_photo) {
         return (
             <FContactPhoto
-            title='ID Photo'
-            imageUrl={ `${getHost.host}/uploads/${user.id_image_name}`}
+            title={ user.found_id_name }
+            imageUrl={ `${getHost.host}/uploads/${user.found_id_photo}`}
             imageStyles={{ width: '90%', margin: 20 }}
             />
         )

@@ -11,10 +11,11 @@ import { Profile } from './profile/Profile';
 import { About } from './aboutApp/About';
 import { FoundProfile } from './home/FoundProfile';
 import { ChangeProfilePhoto } from './profile/ChangeProfilePhoto';
-import { ChangeIDPhoto } from './profile/ChangeIDPhoto';
+import { AddIDPhoto } from './profile/AddIDPhoto';
 import { FIconButton } from '../res/custom/FButtons';
 import { colors } from '../res/colors';
 import { HowTo } from './howTo/HowTo';
+import { ViewAll } from './profile/ViewAll';
 
 
 // Initial component when the app is started
@@ -129,9 +130,16 @@ const mainNavigator = createStackNavigator(
             })
         },
         ChangeIDPhoto: {
-            screen: ChangeIDPhoto,
+            screen: AddIDPhoto,
             navigationOptions: () => ({
-                headerTitle: 'Change ID Photo',
+                headerTitle: 'Add ID Photo',
+                ...inNavConfig,
+            })
+        },
+        ViewAll: {
+            screen: ViewAll,
+            navigationOptions: () => ({
+                headerTitle: 'View All Photos',
                 ...inNavConfig,
             })
         },

@@ -133,6 +133,10 @@ export class ChangeProfilePhoto extends Component {
         .catch(() => this.setState({ activeIndicator: false, somethingWrong: true }) )
     };
 
+    _tryAgain = () => {
+        this.setState({ somethingWrong: false });
+    };
+
     render() {
         const { loading, activeIndicator, somethingWrong, picture, user } = this.state;
 
@@ -140,7 +144,7 @@ export class ChangeProfilePhoto extends Component {
             return <FLoading loadingColor={ colors.purple } />;
 
         } else if(somethingWrong) {
-            return <FWrong tryAgain={ f => f } btnColor={ colors.purple } />
+            return <FWrong tryAgain={ this._tryAgain } btnColor={ colors.purple } />
 
         } else {
             return (

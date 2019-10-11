@@ -52,14 +52,11 @@ export class ConfirmAccount extends Component {
         // Submit
         send('/confirm_verification_code', formData)
             .then(response => {
-                if(response.user) {
-                    const status = saveCred(user);
-                    if(status) {
-                        this.setState({ activeIndicator: false });
-                        this.props.navigation.navigate('Main');
-                    } else {
-                        this.setState({ somethingWrong: true, activeIndicator: false });
-                    }
+                if(response.email) {
+                    saveCred(response.email);
+                    this.setState({ activeIndicator: false });
+                    this.props.navigation.navigate('Main');
+
                 } else if(response.invalid_code) {
                     this.setState({ activeIndicator: false, invalidCode: true, wrongCode: false });
 

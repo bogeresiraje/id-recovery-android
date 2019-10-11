@@ -94,13 +94,13 @@ export class Find extends Component {
 
         await send('/search_owner', formData)
             .then(response => {
-                if(response.owner_id) {
+                if(response.user) {
                     // The user may continue to search for the owner
                     activities.searchOwnerProfile = false;
                     activities.searchingOwner = false,
                     this.setState({ activities: activities, picture: null, redirect: true,
                         owner_id: response.owner_id });
-                    this.props.navigation.navigate('FoundProfile', { 'userId': response.owner_id });
+                    this.props.navigation.navigate('FoundProfile', { 'user': response.user });
                     
                 } else if (response.no_face_detected) {
                     //
